@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/*  Html elementindeki dark class'ını tailwinde entegre etmek */ 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer components {
     .container {
         @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
