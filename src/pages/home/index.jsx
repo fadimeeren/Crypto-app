@@ -1,5 +1,6 @@
 import RefreshButton from "../../components/home/refresh-button";
 import Searchbar from "../../components/home/searchbar";
+import InfoList from "../../components/home/info-list";
 
 const Home = () => {
   return (
@@ -21,6 +22,11 @@ const Home = () => {
 
            <RefreshButton />
         </div>
+      </div>
+
+      {/* Bilgiler*/ }
+      <div> 
+        <InfoList total={120} lastUpdate={"10-01-2025"}/>
       </div>
     </div>
   );
