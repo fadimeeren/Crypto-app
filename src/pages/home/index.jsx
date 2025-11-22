@@ -1,8 +1,34 @@
+import { useState, useEffect } from "react";
 import RefreshButton from "../../components/home/refresh-button";
 import Searchbar from "../../components/home/searchbar";
 import InfoList from "../../components/home/info-list";
+import coinApi from "../../services/coinApi";
 
 const Home = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [coins, setCoins] = useState([]);
+  const [lastUpdated, setLastUpdated] = useState(null);
+
+  // api'dan coin verilierini çeken fonksiyon
+  const fetchCoins = () => {
+    setLoading(true);
+
+    coinApi
+      .getTopCoins()
+      .then((data) => {
+        setCoins(data);
+        setLastUpdated(new Date());
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  };
+
+  // component ekrana gelince verileri çek
+  useEffect(() => {
+    fetchCoins();
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Başlık */}
@@ -18,15 +44,18 @@ const Home = () => {
 
         {/* Arama ve Yenileme */}
         <div className="flex items-center gap-5">
-           <Searchbar />
+          <Searchbar />
 
-           <RefreshButton />
+          <RefreshButton />
         </div>
       </div>
 
-      {/* Bilgiler*/ }
-      <div> 
-        <InfoList total={120} lastUpdate={"10-01-2025"}/>
+      {/* Bilgiler*/}
+      <div>
+      <InfoList
+        total={coins.length}
+        lastUpdate={lastUpdated?.toLocaleTimeString()}
+      />
       </div>
     </div>
   );
