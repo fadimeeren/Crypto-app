@@ -3,6 +3,8 @@ import RefreshButton from "../../components/home/refresh-button";
 import Searchbar from "../../components/home/searchbar";
 import InfoList from "../../components/home/info-list";
 import coinApi from "../../services/coinApi";
+import CoinCard from "../../components/home/coin-card";
+import Loader from "../../components/loader";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -52,10 +54,21 @@ const Home = () => {
 
       {/* Bilgiler*/}
       <div>
-      <InfoList
-        total={coins.length}
-        lastUpdate={lastUpdated?.toLocaleTimeString()}
-      />
+        <InfoList
+          total={coins.length}
+          lastUpdate={lastUpdated?.toLocaleTimeString()}
+        />
+
+        {/* Listeleme */}
+        {loading && coins.length < 1 ? (
+        <Loader />
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {coins.map((coin) => (
+            <CoinCard key={coin.id} coin={coin} />
+          ))}
+        </div>
+      )}
       </div>
     </div>
   );
