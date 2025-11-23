@@ -1,14 +1,22 @@
-import { createContext, useState, useContext, useEffect } from "react";
+
+import { createContext, useContext, useEffect, useState } from "react";
 
 // Context Kurulumu
 export const ThemeContext = createContext();
 
 // Sağlayıcı - HOC
 export const ThemeProvider = ({ children }) => {
-  // tema state'i
-  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  // tema state'i - önce localStorage'dan kontrol et, yoksa tarayıcı tercihini al
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      return savedTheme === "dark";
+    }
+    // Tarayıcının tercihini kontrol et
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
-  // temayı değiştirecek fonksiyon
+  // temayı değiştiricek fonksiyon
   const toggleTheme = () => {
     setIsDarkMode((prev) => !prev);
   };
@@ -17,27 +25,29 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     const root = window.document.documentElement;
 
-    if(isDarkMode) {
-        root.classList.add("dark");
-        localStorage.setItem("theme", "dark");
+    if (isDarkMode) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     } else {
-        root.classList.remove("dark");
-        localStorage.setItem("theme", "light");
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
 
-  return <ThemeContext.Provider value={{isDarkMode, toggleTheme}}>
-    {children}
-    </ ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 };
 
 // Custom Hook
 export const useTheme = () => {
-    const context = useContext(ThemeContext);
+  const context = useContext(ThemeContext);
 
-    if(context === undefined) {
-        throw new Error ("Provider ile App'i Sarmala")
-    }
+  if (context === undefined) {
+    throw new Error("Provider'ile App'i Sarmala");
+  }
 
-    return context;
-}
+  return context;
+};

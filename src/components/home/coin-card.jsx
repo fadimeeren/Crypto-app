@@ -1,4 +1,3 @@
-
 import { Star, TrendingUp, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatBigNumber, formatPercentage, formatPrice } from "../../utils/helpers";
